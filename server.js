@@ -1,0 +1,70 @@
+const express = require('express');
+const axios = require('axios');
+const path = require('path');
+const app = express();
+const PORT = 3000;
+const MOCK_API_BASE_URL = 'http://localhost:3001'; // URL do nosso servidor mockado
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); 
+
+
+// DB em Memória Simulado
+let manutencoes = [
+    { id: 1, data: "2025-09-20", quilometragem: 75000, servico: "Troca de óleo e filtro", codigoPeca: "1609428080", nomePeca: "Filtro de Óleo", custo: 350.50, observacoes: "Utilizado óleo Total 5W30." },
+    { id: 2, data: "2025-09-22", quilometragem: 75250, servico: "Troca de Pastilhas de Freio", codigoPeca: "9815217480", nomePeca: "Pastilha de Freio Dianteira", custo: 480.00, observacoes: "Pastilhas originais." }
+];
+let nextId = 3; // Variável para gerar o próximo ID
+
+
+// --------------------------------------------- ROTAS ---------------------------------------------
+
+app.get('/', (req, res) => {
+    // Renderiza o arquivo 'historico.ejs' e passa a lista de manutenções para ele
+    res.render('historico', { manutencoes });
+});
+
+app.get('/novo', (req, res) => {
+    // Apenas renderiza a página com o formulário
+    res.render('formulario');
+});
+
+app.post('/novo', (req, res) => {
+    const novaManutencao = {
+        id: nextId++,
+        data: req.body.data,
+        quilometragem: parseInt(req.body.quilometragem),
+        servico: req.body.servico,
+        codigoPeca: req.body.codigoPeca,
+        nomePeca: req.body.nomePeca, // O nome da peça já veio preenchido do front-end
+        custo: parseFloat(req.body.custo),
+        observacoes: req.body.observacoes
+    };
+
+    manutencoes.push(novaManutencao);
+    console.log('[App Principal] Nova manutenção salva:', novaManutencao);
+
+    // Redireciona o usuário de volta para a página inicial
+    res.redirect('/');
+});
+
+// o front-end vai chamar para falar com a API Mockada
+app.get('/api/peca/:codigo', async (req, res) => {
+    const { codigo } = req.params;
+    try {
+        // A nossa aplicação principal chama a API Mockada
+        const resposta = await axios.get(`${MOCK_API_BASE_URL}/api/pecas/${codigo}`);
+        // E retorna a resposta da API Mockada para o front-end
+        res.json(resposta.data);
+    } catch (error) {
+        res.status(404).json({ error: 'Peça não encontrada' });
+    }
+});
+
+
+// 7. Iniciando o Servidor
+app.listen(PORT, () => {
+    console.log(`[App Principal] Servidor rodando em http://localhost:${PORT}`);
+});
