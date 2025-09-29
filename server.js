@@ -74,9 +74,51 @@ app.get('/manutencao/:id', (req, res) => {
     }
 });
 
+app.get('/manutencao/:id/editar', (req, res) => {
+    const id = parseInt(req.params.id);
+    const manutencao = manutencoes.find(m => m.id === id);
+
+    if (manutencao) {
+        // Reutilizamos o mesmo formulário, mas passamos os dados existentes
+        res.render('formulario', { manutencao });
+    } else {
+        res.status(404).send('Manutenção não encontrada!');
+    }
+});
+
+app.post('/manutencao/:id/editar', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = manutencoes.findIndex(m => m.id === id); // Encontra o índice do item no array
+
+    if (index !== -1) {
+        // Atualiza o objeto no array com os novos dados do formulário
+        manutencoes[index] = {
+            id: id,
+            data: req.body.data,
+            quilometragem: parseInt(req.body.quilometragem),
+            servico: req.body.servico,
+            codigoPeca: req.body.codigoPeca,
+            nomePeca: req.body.nomePeca,
+            custo: parseFloat(req.body.custo),
+            observacoes: req.body.observacoes
+        };
+        console.log('[App Principal] Manutenção atualizada:', manutencoes[index]);
+        res.redirect(`/manutencao/${id}`); // Redireciona para a página de detalhes
+    } else {
+        res.status(404).send('Manutenção não encontrada!');
+    }
+});
+
+app.post('/manutencao/:id/excluir', (req, res) => {
+    const id = parseInt(req.params.id);
+    // Filtra o array, mantendo todos os itens EXCETO o que tem o ID correspondente
+    manutencoes = manutencoes.filter(m => m.id !== id);
+    console.log(`[App Principal] Manutenção com ID ${id} excluída.`);
+
+    res.redirect('/'); // Redireciona para a página inicial
+});
 
 
-// 7. Iniciando o Servidor
 app.listen(PORT, () => {
     console.log(`[App Principal] Servidor rodando em http://localhost:${PORT}`);
 });

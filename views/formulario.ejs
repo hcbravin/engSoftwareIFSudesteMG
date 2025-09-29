@@ -15,43 +15,43 @@
 <body>
     <div class="container-flex mx-2">
         <div class="row">
-            <div class="col-12"><h1>Registrar Nova Manutenção</h1></div>
+            <div class="col-12"><h1><%= typeof manutencao !== 'undefined' ? 'Editar' : 'Registrar Nova' %> Manutenção</h1></div>
         </div>
         <hr>
-        <form action="/novo" method="POST">
+        <form action="<%= typeof manutencao !== 'undefined' ? '/manutencao/' + manutencao.id + '/editar' : '/novo' %>" method="POST">
             <div class="row justify-content-center">
                 <div class="col-12 mb-2 col-sm-6 col-md-4 col-lg-2">
                     <label for="data">Data:</label>
-                    <input type="date" id="data" name="data" class="form-control" required>
+                    <input type="date" id="data" name="data" class="form-control" value="<%= typeof manutencao !== 'undefined' ? manutencao.data : '' %>" required>
                 </div>
                 <div class="col-12 mb-2 col-sm-6 col-md-4 col-lg-2">
                     <label for="quilometragem">Quilometragem:</label>
-                    <input type="number" id="quilometragem" name="quilometragem" class="form-control" required>
+                    <input type="number" id="quilometragem" name="quilometragem" class="form-control" value="<%= typeof manutencao !== 'undefined' ? manutencao.quilometragem : '' %>" required>
                 </div>
                 <div class="col-12 mb-2 col-sm-6 col-md-5">
                     <label for="servico">Serviço Realizado:</label>
-                    <input type="text" id="servico" name="servico" class="form-control" required>
+                    <input type="text" id="servico" name="servico" class="form-control" value="<%= typeof manutencao !== 'undefined' ? manutencao.servico : '' %>" required>
                 </div>
             </div>
             <div class="row justify-content-center">
                 <div class="col-12 mb-2 col-sm-6 col-md-4 col-lg-3">
                     <label for="codigoPeca">Código da Peça:</label>
-                    <input type="text" id="codigoPeca" class="form-control" name="codigoPeca">
+                    <input type="text" id="codigoPeca" class="form-control" name="codigoPeca" value="<%= typeof manutencao !== 'undefined' ? manutencao.codigoPeca : '' %>">
                 </div>
                 <div class="col-12 mb-2 col-sm-6 col-md-4">
                     <label for="nomePeca">Nome da Peça:</label>
-                    <input type="text" id="nomePeca" name="nomePeca" class="form-control" readonly style="background-color: #eee;">
+                    <input type="text" id="nomePeca" name="nomePeca" class="form-control" readonly style="background-color: #eee;"  value="<%= typeof manutencao !== 'undefined' ? manutencao.nomePeca : '' %>">
                 </div>
                 <div class="col-12 mb-2 col-sm-6 col-md-4 col-lg-2">
                     <label for="custo">Custo (R$):</label>
-                    <input type="number" step="0.01" id="custo" class="form-control" name="custo" required>
+                    <input type="number" step="0.01" id="custo" class="form-control" name="custo" value="<%= typeof manutencao !== 'undefined' ? manutencao.custo : '' %>" required>
                 </div>
                 
             </div>
             <div class="row justify-content-center">
                 <div class="col-12 mb-2 col-sm-6 col-md-9">
                     <label for="observacoes">Observações:</label>
-                    <textarea id="observacoes" name="observacoes" class="form-control" rows="3"></textarea>
+                    <textarea id="observacoes" name="observacoes" class="form-control" rows="3"><%= typeof manutencao !== 'undefined' ? manutencao.observacoes : '' %></textarea>
                 </div>
             </div>
             <div class="row justify-content-center">
