@@ -63,6 +63,18 @@ app.get('/api/peca/:codigo', async (req, res) => {
     }
 });
 
+app.get('/manutencao/:id', (req, res) => {
+    const id = parseInt(req.params.id); // Converte o ID da URL para número
+    const manutencao = manutencoes.find(m => m.id === id); // Procura a manutenção pelo ID
+
+    if (manutencao) {
+        res.render('detalhes', { manutencao }); // Renderiza a página de detalhes
+    } else {
+        res.status(404).send('Manutenção não encontrada!'); // Retorna erro 404 se não encontrar
+    }
+});
+
+
 
 // 7. Iniciando o Servidor
 app.listen(PORT, () => {
